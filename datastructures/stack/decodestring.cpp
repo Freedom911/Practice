@@ -47,6 +47,7 @@ class Solution{
 		  {
 		    s2 += torep;
 		  }
+		  std::cout << "WREPEAT = " << repeat << " HEY = " << s2 << "\n";
 		  s1 = s1 + s2;
 		  std::cout << "REPEAT = " << repeat << " HEY = " << s1 << "\n";
 		  torep = ""; 

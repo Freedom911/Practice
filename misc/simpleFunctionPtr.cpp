@@ -15,6 +15,8 @@ int addRet(int a,int b)
 int main()
 {
   void (*addPtr)(int,int) = &add;
+
+
   (*addPtr)(10,3);
 
   int (*addRetPtr)(int,int) = &addRet;
