@@ -1,4 +1,4 @@
-##Behavioral Pattern 
+## Behavioral Pattern 
 They are concerned with the algorithm and the responsibilities between object.Behavioral design pattern
 not only focus on pattern of object or class but also how they communicate with each other.
 Behavioral Class Pattern uses inheritance while behvioral object pattern uses composition.
