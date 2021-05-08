@@ -1,0 +1,1 @@
+Greedy Algorithm is a algorithm paradigm which allows to solve optimization problems in polynomial time. Greedy ALgorithm cannot be applied to all problems but is generally better than dynamic algorithm where greedy can be applied
