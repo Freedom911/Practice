@@ -25,6 +25,7 @@ int LongestCommonSubstring(std::string str1,std::string str2)
       }
       else
       {
+        //we want to make it 0 since we want it continuous
         arr[i][j] = 0;
       }
     }

@@ -1,3 +1,5 @@
+//Program To remove duplicates from the given sorted array
+
 #include <iostream>
 #include <vector>
 

@@ -12,6 +12,7 @@ int minPlatformNeeded(std::vector<int> arrivalTime,std::vector<int> departureTim
   int i = 0;
   int j = 0;
   int platform = 0;
+  std::sort(departureTime.begin(),departureTime.end());
 
   while( i< arrivalTime.size() && j < departureTime.size())
   {

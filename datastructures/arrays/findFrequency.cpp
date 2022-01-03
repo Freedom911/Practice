@@ -24,6 +24,6 @@ void findFrequency(std::vector<int> ar)
 
 int main()
 {
-  std::vector<int> ar{5,2,7,7,5,5,2};
+  std::vector<int> ar{2,3,1,2,3};
   findFrequency(ar);
 }

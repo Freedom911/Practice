@@ -17,7 +17,7 @@ void findNextGreater(std::vector<int> &no)
 
   std::cout << "\n INITIAL VECGOT " << no << "\n";
 
-  //step 1 find a no whose right side is less
+  //step 1 find a no whose left side is less
   int i = no.size() - 1;
   for(; i> 0; i--)
   {
@@ -28,7 +28,7 @@ void findNextGreater(std::vector<int> &no)
   int elem = no[i - 1];
   //Step 2 find the next greater no
   int nextGreator = no[i];
-  int j,k ;
+  int j = i,k = i;
   for(j = i + 1; j< no.size(); j++)
   {
     if(no[j] > elem && no[j] < nextGreator)

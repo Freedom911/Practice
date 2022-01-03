@@ -26,7 +26,7 @@ int getMinimumCandies(std::vector<int> childrenRating)
   //since starting is from there
   //we are using the same result vector. the last element is at correct position
   //we update result vector if max is found
-  for(int j = childrenRating.size() - 1; j >= 0; j--)
+  for(int j = childrenRating.size() - 2; j >= 0; j--)
   {
     int candy = 1;
      if(childrenRating[j + 1] < childrenRating[j])

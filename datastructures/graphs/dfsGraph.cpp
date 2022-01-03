@@ -37,15 +37,69 @@ void dfs(std::vector<int> v[],int total,int nodeToStartFrom)
     }
   }
 }
+
+void findCycle(std::vector<int> v[],int total,int nodeToStartFrom)
+{
+  std::stack<std::pair<int,int>> st;
+  st.push(std::make_pair(nodeToStartFrom,nodeToStartFrom));
+  std::vector<bool> b(total,false);
+
+  while(!st.empty())
+  {
+    int top = st.top().first;
+    int parent = st.top().second;
+    std::cout << " CALLED " << top << "\n";;
+    st.pop();
+
+    if(b[top] == false)
+    {
+     // std::cout << top << " ";
+      b[top] = true;
+    }
+
+    for(int i = 0; i < v[top].size(); i++)
+    {
+      int elem = v[top][i];
+      if(b[elem] == false)
+      {
+        std::cout << "\n PUSHING = " << elem << " PARENT = " << parent << "\n";
+        st.push(std::make_pair(elem,top));
+      }
+      else
+      {
+        if(elem != parent)
+        {
+          std::cout << "\n Cycle Detected for node -> " << elem << " " << parent << "\n";
+          return;
+        }
+      }
+
+    }
+  }
+}
+
 int main()
 {
-  int V = 5;
-  std::vector<int> v[V];
-  addEdge(v,0,1);
-  addEdge(v,0,2);
-  addEdge(v,1,4);
-  addEdge(v,2,1);
-  addEdge(v,2,3);
-  addEdge(v,3,4);
-  dfs(v,V,0);
+  int V = 4;
+  std::vector<int> undirected[V];
+  addEdge(undirected,0,1);
+  addEdge(undirected,1,0);
+
+  addEdge(undirected,0,2);
+  addEdge(undirected,2,0);
+
+  addEdge(undirected,1,3);
+  addEdge(undirected,3,1);
+
+ addEdge(undirected,2,3);
+ addEdge(undirected,3,2);
+  std::cout << "\n DFS FOR UNIDRECTED GRAPH \n";
+  //dfs(undirected,V,0);
+  findCycle(undirected,V,0);
+
+
+
+
+
+
 }

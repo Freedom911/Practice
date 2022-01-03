@@ -20,7 +20,6 @@ class GameWorld
       return instance;
     }
 
-    GameWorld(){}
 
     //Need To Make Copy Constructor private or delete to avoid copying
     GameWorld(const GameWorld &world) =delete;
@@ -33,6 +32,7 @@ class GameWorld
     }
 
   private:
+    GameWorld() {};
 
     //I Means Implmentationi
     int ISpawnActors(int totalActorsToSpawn)

@@ -31,7 +31,7 @@ int findSetBitsOptimized(int no)
   while(no)
   {
     no =  no & (no -1);
-    std::cout << "\n CALLED1\n";
+    std::cout << "\n CALLED1 " << no << "\n";;
     count++;
   }
   return count;
@@ -39,6 +39,6 @@ int findSetBitsOptimized(int no)
 
 int main()
 {
-  std::cout << "\n SET BITS FOR 6 = " << findSetBits(2048) << "\n";
-  std::cout << "\n SET BITS FOR 6 = " << findSetBitsOptimized(2048) << "\n";
+  //std::cout << "\n SET BITS FOR 6 = " << findSetBits(2048) << "\n";
+  std::cout << "\n SET BITS FOR 6 = " << findSetBitsOptimized(10) << "\n";
 }

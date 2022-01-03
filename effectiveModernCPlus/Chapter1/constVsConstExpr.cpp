@@ -10,7 +10,7 @@ constexpr int returnVal()
 //ConstExr function Can't be void
 constexpr void what()
 {
-  std::cout << "\n HI\n";
+ // std::cout << "\n HI\n";
 }
 
 

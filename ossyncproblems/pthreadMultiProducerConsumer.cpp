@@ -76,20 +76,24 @@ int main()
   sem_init(&emptyCount,0,10);
   sem_init(&fillCount,0,0);
 
-  pthread_t producerThread,consumerThread1,consumerThread2,consumerThread3;
+  pthread_t producerThread,producerThread1,producerThread2,consumerThread1,consumerThread2,consumerThread3;
   const char *msg1 = "1";
   const char *msg2 = "2";
   const char *msg3 = "3";
   pthread_create(&producerThread,NULL,producer,NULL);
+  pthread_create(&producerThread1,NULL,producer,NULL);
+  pthread_create(&producerThread2,NULL,producer,NULL);
   pthread_create(&consumerThread1,NULL,consumer,(void*)(msg1));
-  pthread_create(&consumerThread2,NULL,consumer,(void*)(msg2));
-  pthread_create(&consumerThread3,NULL,consumer,(void*)(msg3));
+  //pthread_create(&consumerThread2,NULL,consumer,(void*)(msg2));
+  //pthread_create(&consumerThread3,NULL,consumer,(void*)(msg3));
  
 
   pthread_join(producerThread,NULL);
   pthread_join(consumerThread1,NULL);
-  pthread_join(consumerThread2,NULL);
-  pthread_join(consumerThread3,NULL);
+  pthread_join(producerThread2,NULL);
+  pthread_join(producerThread1,NULL);
+ // pthread_join(consumerThread2,NULL);
+  //pthread_join(consumerThread3,NULL);
 
 
 }

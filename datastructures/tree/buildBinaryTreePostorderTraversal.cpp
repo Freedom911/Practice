@@ -63,6 +63,31 @@ void PostOrderTraversal(BinaryTree *root)
   }
 }
 
+//We will Use a marker nullptr so basically when we reach nullptr
+//this means we have visited both side
+void PostOrderTraversalOptimized(BinaryTree* root)
+{
+  std::stack<BinaryTree*>st;
+  std::cout << "\n Iterative optimized \n";
+  if(root)
+  st.push(root);
+  while(st.size())
+  {
+    BinaryTree *to = st.top();
+    if(to == nullptr)
+    {
+      st.pop();
+      std::cout << st.top()->data << " ";
+      st.pop();
+      continue;
+    }
+
+    st.push(nullptr);
+    if(to->rightChild)st.push(to->rightChild);
+    if(to->leftChild)st.push(to->leftChild);
+  }
+}
+
 
 //Create tree as following
 //      10
@@ -95,6 +120,7 @@ int main()
   std::cout << "\n RECURSIVE TRAVERSAL \n";
   PostOrderTraversalRec(rootNode);
   PostOrderTraversal(rootNode);
+  PostOrderTraversalOptimized(rootNode);
   
 
 }

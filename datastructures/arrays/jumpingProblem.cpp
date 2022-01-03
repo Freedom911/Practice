@@ -1,3 +1,5 @@
+//Programt to tell if we are able to rach the end element by taking the jumps mentioned
+//in each index of  an array
 #include <iostream>
 #include <vector>
 

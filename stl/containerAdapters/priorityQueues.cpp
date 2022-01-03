@@ -9,6 +9,8 @@
 #include <queue>
 #include <vector>
 #include <list>
+
+
 int main()
 {
   //Max Heap
@@ -43,5 +45,20 @@ int main()
     std::cout << pqmin.top() << " ";
     pqmin.pop();
   }
+
+
+  std::cout << "\n";
+ auto cmp = [](std::string l,std::string r) { std::cout << "HERE IT IS = " <<  l << " " << r << "\n"; return l.length() < r.length();};
+  std::priority_queue<std::string,std::vector<std::string>,decltype(cmp)> custom(cmp);
+  custom.push("ACC");
+  custom.push("B");
+  //custom.push("CD");
+  std::cout << "\n\n";
+  while(!custom.empty())
+  {
+    std::cout << custom.top() << " ";
+    custom.pop();
+  }
+  
 
 }

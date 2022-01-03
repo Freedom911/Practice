@@ -33,6 +33,7 @@ double getMinMaxDistance(const std::vector<int> &stations,const int &totalAddSta
   while(r - l > deltaDiff)
   {
     double mid = l + (r-l)/2;
+    std::cout << mid << "\n";
 
     //If we are able to achieve the mid distance by utiltizing totalAddStations or less than it
     //then we try to move left to reduce more distance
@@ -48,7 +49,7 @@ double getMinMaxDistance(const std::vector<int> &stations,const int &totalAddSta
 
 int main()
 {
-  std::cout << "\n Minimum Distance is = " << getMinMaxDistance({1,5,10},1) << "\n";
-  std::cout << "\n Minimum Distance is = " << getMinMaxDistance({1,2,3,4,5,6,7,8,9,10},9) << "\n";
+  std::cout << "\n Minimum Distance is = " << getMinMaxDistance({1,5,10},2) << "\n";
+  //std::cout << "\n Minimum Distance is = " << getMinMaxDistance({1,2,3,4,5,6,7,8,9,10},9) << "\n";
 }
 

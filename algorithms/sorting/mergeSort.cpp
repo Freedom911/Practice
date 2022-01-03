@@ -7,75 +7,70 @@ constexpr std::size_t arraySize(T(&)[N])
   return N;
 }
 
-void MergeAndSort(int arr[],int p,int q,int r)
+void merge(int arr[],int l,int m,int r)
 {
-
-  int n1  = q - p + 1;
-  int n2 = r - q ;//- 1;
-
-  if(n2 < 0)
-    n2 = 0;
-
-  int L1[n1 + 1],L2[n2 + 1];
-
-  for(int i = 0; i < n1; i++)
-  {
-    L1[i] = arr[p + i];
-  }
-  for(int i = 0; i < n2; i++)
-  {
-    L2[i] = arr[q + i];
-  }
-  L1[n1] = std::numeric_limits<int>::max();
-  L2[n2] = std::numeric_limits<int>::max();
-
-  int i = 0,j = 0,k = p;
-  for(; k < r;k++)
-  {
-    if(L1[i] <= L2[j])
-      {
-	arr[k] = L1[i];
-	i++;
-      }
-
-      else
-      {
-	arr[k] = L2[j];
-	j++;
-      }
-
-  }
-
-  while(i < n1)
-  {
-    arr[k] = L1[i];
-    i++;
-    k++;
-  }
-  while(j < n1)
-  {
-    arr[k] = L2[j];
-    j++;
-    k++;
-  }
-
+    int n1 = m - l + 1;
+    int n2 = r - m;
+ 
+    // Create temp arrays
+    int L[n1], R[n2];
+ 
+    // Copy data to temp arrays L[] and R[]
+    for (int i = 0; i < n1; i++)
+        L[i] = arr[l + i];
+    for (int j = 0; j < n2; j++)
+        R[j] = arr[m + 1 + j];
+ 
+    // Merge the temp arrays back into arr[l..r]
+ 
+    // Initial index of first subarray
+    int i = 0;
+ 
+    // Initial index of second subarray
+    int j = 0;
+ 
+    // Initial index of merged subarray
+    int k = l;
+ 
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) {
+            arr[k] = L[i];
+            i++;
+        }
+        else {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+ 
+    // Copy the remaining elements of
+    // L[], if there are any
+    while (i < n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+ 
+    // Copy the remaining elements of
+    // R[], if there are any
+    while (j < n2) {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
 }
 
 
-void MergeSort(int arr[],int p,int r)
+void mergeSort(int arr[],int l,int r)
 {
-  if(p >= r)
-    return;
-
-    else
-    {
-      int q = (p + r)/2;
-      MergeSort(arr,p,q);
-      MergeSort(arr,q+1,r);
-     // MergeAndSort(arr,p,q,r);
-
+ if(l>=r){
+        return;//returns recursively
     }
-
+    int m =l+ (r-l)/2;
+    mergeSort(arr,l,m);
+    mergeSort(arr,m+1,r);
+    merge(arr,l,m,r);
 }
 
 
@@ -88,7 +83,7 @@ int main()
     std::cout << arr[index] << " ";
   }
   std::cout << "\n After Sorting \n";
-  MergeSort(arr,0,arraySize(arr));
+  mergeSort(arr,0,arraySize(arr) -1);
   for(int index = 0; index < arraySize(arr); index++)
   {
     std::cout << arr[index] << " ";

@@ -59,12 +59,12 @@ int knapsackTopDown(std::vector<int> wt,std::vector<int> val,int capacity)
        if(wt[i-1] <= j)
        {
                              //INclude                    //dont include
-         mt[i][j] = std::max(val[i-1] + t[i-1][j-wt[i-1]],t[i-1][j]);
+         mt[i][j] = std::max(val[i-1] + mt[i-1][j-wt[i-1]],mt[i-1][j]);
        }
        //weight of the bag at i - 1 is greater than j i.e capacity
        else
        {
-         mt[i][j] = t[i-1][j];
+         mt[i][j] = mt[i-1][j];
        }
 
      }
