@@ -28,7 +28,6 @@ void printLCS(std::string str1,std::string str2)
   for(int j = 0; j < str2.length(); j++)
     arr[0][j] = 0;
 
-  std::string op1;
 
   for(int i = 1; i <= str1.length();i++)
   {
@@ -37,7 +36,6 @@ void printLCS(std::string str1,std::string str2)
       if(str1[i-1] == str2[j-1])
       {
         arr[i][j] = arr[i-1][j-1] + 1;
-        op1 += str1[i-1];
       }
       else
       {
@@ -46,7 +44,7 @@ void printLCS(std::string str1,std::string str2)
     }
   }
 
-  std::cout << "\n 1 = " << op1 << "\n";
+
 
   int i = str1.length(),j = str2.length();
 
