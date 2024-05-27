@@ -35,6 +35,22 @@ int LCS(std::string s1,std::string s2)
   return t[m][n];
 }
 
+
+//Using two pointers complexity is O(n)
+bool isSequenceTwoPointers(std::string str1,std::string str2)
+{
+ int  j = 0;
+ for(int i = 0; i < str1.length(); i++)
+ {
+	 if(str1[i] == str2[j])
+	 {
+		 j++;
+	 }
+ }
+ 
+ return j == str2.length();
+}
+
 bool isSequence(std::string str1,std::string str2)
 {
 
@@ -44,4 +60,5 @@ bool isSequence(std::string str1,std::string str2)
 int main()
 {
   std::cout << "\n Is Sequence " << isSequence("ADXCPY","AXY") << "\n";
+  std::cout << "\n Is Sequence " << isSequenceTwoPointers("ADXCPY","AXY") << "\n";
 }
