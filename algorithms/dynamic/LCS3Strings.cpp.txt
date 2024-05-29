@@ -1,0 +1,122 @@
+
+#include <iostream>
+#include <vector>
+#include <queue>
+
+
+
+//LCS of 3 strings will require 3d array
+//it wont be equal to lcs of 2 strins then lcs with 3rd as
+//LCS of 2 string may not be present in 3rd
+//EG A:abc
+//B::acb
+//C::ceq
+//LCS(A,B,C) should be c
+//butLCS(A,B) - ab
+//and LCS(ab,C)-NULL which is wrong
+std::string LCS3(std::string A, std::string B, std::string C)
+{
+    const int n = A.size();
+    const int m = B.size();
+    const int q = C.size();
+    //int t[n + 1][m + 1][q + 1];
+    int*** t = new int** [n + 1];
+    for (int i = 0; i < n + 1; i++)
+    {
+        t[i] = new int* [m + 1];
+        for (int j = 0; j < m + 1; j++)
+        {
+            t[i][j] = new int[q + 1];
+            for (int k = 0; k < q + 1; k++)
+            {
+                t[i][j][k] = 0;
+            }
+        }
+    }
+
+    for (int i = 0; i < n + 1; i++)
+    {
+        for (int j = 0; j < m + 1; j++)
+        {
+            for (int k = 0; k < q + 1; k++)
+            {
+                std::cout << i << "," << j << "," << k << " " << t[i][j][k] << "\n";
+            }
+        }
+    }
+
+    for (int i = 1; i < n + 1; i++)
+    {
+        for (int j = 1; j < m + 1; j++)
+        {
+
+            for (int k = 1; k < q + 1; k++)
+            {
+                if (A[i - 1] == B[j - 1] && A[i - 1] == C[k - 1])
+                {
+                    t[i][j][k] = 1 + t[i - 1][j - 1][k - 1];
+                }
+                else
+                {
+                    t[i][j][k] = std::max(std::max(t[i - 1][j][k], t[i][j - 1][k]), t[i][j][k - 1]);
+                }
+            }
+        }
+    }
+
+    std::cout << "\n LENGTH = " << t[n][m][q] << "\n";
+
+    int i = n;
+    int j = m;
+    int k = q;
+
+    std::string ans;
+
+    while (i > 0 && j > 0 && k > 0)
+    {
+        if (A[i - 1] == B[j - 1] && A[i - 1] == C[k - 1])
+        {
+            ans = A[i - 1] + ans;
+            i--;
+            j--;
+            k--;
+        }
+        else if (t[i - 1][j][k] > t[i][j - 1][k] && t[i - 1][j][k] > t[i][j][k - 1])
+        {
+            i--;
+        }
+        else if (t[i][j-1][k] > t[i-1][j][k] && t[i][j-1][k] > t[i][j][k - 1])
+        {
+            j--;
+        }
+        else
+        {
+            k--;
+        }
+    }
+
+    std::cout << "LCS(" << A << "," << B << "," << C << ") = " << ans << " With Length  = " << ans.length() << "\n";
+
+    for (int i = 0; i < n + 1; i++)
+    {
+        
+        for (int j = 0; j < m + 1; j++)
+        {
+            delete[]t[i][j];
+        }
+        delete[]t[i];
+    }
+    delete[]t;
+
+    return ans;
+
+}
+
+
+int main()
+{
+    LCS3("geeks", "geeksfor", "geeksforgeeks");
+    std::vector<int>v{ 1,2,3,4,5 };
+}
+
+
