@@ -8,6 +8,10 @@ int LIS(std::vector<int>arr)
 {
     std::vector<int>srtarr = arr;
     std::sort(srtarr.begin(), srtarr.end());
+    //this handles the case when we have a repeating element like 1,1,4,3
+    //on sorting we get 1,1,3,4 and lcs with 1,1,3,4 and 1,1,4,3 will give 1,3,4 of length 3
+    //but we have to take only increasing element so on unique we get 1,3,4 and lcs with 1,1,4,3 we get 1,3 which is right
+    srtarr.erase( unique( srtarr.begin(), srtarr.end() ), srtarr.end() );
     int n = arr.size();
     int m = srtarr.size();
     std::vector<std::vector<int>> t(n + 1, std::vector<int>(m + 1, 0));
