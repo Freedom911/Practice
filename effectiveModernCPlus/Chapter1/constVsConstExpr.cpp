@@ -7,12 +7,6 @@ constexpr int returnVal()
   return i;
 }
 
-//ConstExr function Can't be void
-constexpr void what()
-{
- // std::cout << "\n HI\n";
-}
-
 
 int main()
 {
