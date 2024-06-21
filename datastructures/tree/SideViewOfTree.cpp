@@ -53,12 +53,12 @@ void printView(TreeNode<T>* Root,int leftView)
       if(leftView == 0)
       {
         if(i == 0)
-          std::cout << Node->Data << " ";
+          std::cout << Node->Data << ",";
       }
       else
       {
         if(i == size -1)
-          std::cout << Node->Data << " ";
+          std::cout << Node->Data << ",";
       }
 
       if(Node->LeftChild != nullptr)
@@ -69,6 +69,33 @@ void printView(TreeNode<T>* Root,int leftView)
 
     }
   }
+}
+
+template<class T>
+void printViewRecursive(TreeNode<T>*Root,const int &view,const int &level,int &maxLevel)
+{
+	if(Root == nullptr)
+	{
+		return;
+	}
+	
+	if(level > maxLevel)
+	{
+		std::cout << Root->Data << ",";
+		maxLevel = level;
+	}
+	
+	//Right View
+	if(view == 1)
+	{
+		printViewRecursive(Root->RightChild,view,level+1,maxLevel);
+		printViewRecursive(Root->LeftChild,view,level+1,maxLevel);
+	}
+	else
+	{
+		printViewRecursive(Root->LeftChild,view,level+1,maxLevel);
+		printViewRecursive(Root->RightChild,view,level+1,maxLevel);
+	}
 }
 
 int main()
@@ -90,6 +117,19 @@ int main()
   int view = 0;
   std::cout << "\n Which view u want 0 - Left ,1 - Right \n";
   std::cin >> view;
+  
+  if(view == 0)
+  {
+	  std::cout << "\n Left View of tree is\n";
+  }
+  else
+  {
+	  std::cout << "\n Right View of tree is ";
+  }
+  
   printView(Root,view);
+  std::cout << "\n In recursive = \n";
+  int maxLevel = 0;
+  printViewRecursive(Root,view,1,maxLevel);
 
 }
