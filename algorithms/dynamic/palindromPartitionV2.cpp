@@ -46,7 +46,7 @@ int MinPartition(std::string str,int i,int j)
 }
 
 //Here we pass table 2d vector as well
-int MinPartitionDP(std::string str,int i,int j,std::vector<std::vector<int>> t)
+int MinPartitionDP(std::string str,int i,int j,std::vector<std::vector<int>> &t)
 {
 	//Base condition 1
 	if(i == j)
@@ -100,14 +100,16 @@ int MinPartitionDP(std::string str,int i,int j,std::vector<std::vector<int>> t)
 
 int main()
 {
-	std::string str = "abcd";
+	std::string str = "abcdaefkkfalwefghjgdw";
 	int n = str.length();
-	if(isPalindrome(str,0,n))
+	if(0 && isPalindrome(str,0,n))
 	{
 		std::cout << "0";
 		return 0;
 	}
+    //this will be so slow without dp
 	std::cout << MinPartition(str,0,n-1) << "\n";
+    //return 1;
 	
     std::vector<std::vector<int>> t( n + 1 , std::vector<int> (n+1,-1));
     	
