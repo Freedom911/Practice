@@ -31,71 +31,86 @@ void InorderTraversal(TreeNode<T>*RootNode)
 
 }
 
-//queue last will element will be the deepst one
-template<typename T>
-TreeNode<T>* GetDeepestNode(TreeNode<T>*RootNode)
-{
-
-  TreeNode<T>*Node = NULL;
-  std::queue<TreeNode<T>*>queue;
-  queue.push(RootNode);
-  while(!queue.empty())
-  {
-    Node = queue.front();
-    queue.pop();
-
-    if((Node)->LeftChild)
-      queue.push((Node)->LeftChild);
-    if((Node)->RightChild)
-      queue.push((Node)->RightChild);
-  }
-
-  return Node;
-}
-
-//queue last will element will be the deepst one
-template<class T>
-TreeNode<T>* GetDesiredNode(TreeNode<T>*RootNode,T val)
-{
-  std::queue<TreeNode<T>*> queue;
-  queue.push(RootNode);
-    TreeNode<T>*Node = NULL;
-
-  while(!queue.empty())
-  {
-    Node = queue.front();
-    queue.pop();
-
-    if(Node && Node->Data == val)
-      return Node;
-
-    if(Node->LeftChild)
-      queue.push(Node->LeftChild);
-    if(Node->RightChild)
-      queue.push(Node->RightChild);
-  }
-
-  return Node;
-
-}
 
 template<class T>
 TreeNode<T>* DeleteNode(TreeNode<T>*RootNode,T val)
 {
-  //step 1 find deepest node
+    //No Element presnet
+    if(RootNode == nullptr)
+    {
+       return nullptr;
+    }
+   //Step 1 first Target Node
+   std::queue<std::pair<TreeNode<T> *,TreeNode<T>*>> q;
+   std::pair<TreeNode<T>*,TreeNode<T>*>last;
+   last.first = nullptr;
+   last.second = nullptr;
+   TreeNode<T>* target = nullptr; 
 
-  TreeNode<T>*DeepestNode = GetDeepestNode(RootNode);
-  //Step 2 Find Element
-// TreeNode<T>*DesiredNode = GetDesiredNode(RootNode,val);
-//
-// std::swap(DeepestNode->Data,DesiredNode->Data);
+   q.push(std::make_pair(RootNode,nullptr));
 
-  std::cout << "\n Deepest Node is = " << (DeepestNode)->Data << "\n";
+   while(q.empty() == false)
+   {
+     std::pair<TreeNode<T>*,TreeNode<T>*>front = q.front();
+     q.pop();
+ 
+     //Step 1 find target Node to delete
+     if(front.first->Data == val)
+     {
+        target = front.first;
+     }
 
-  delete DeepestNode;
-  DeepestNode = NULL;
+     last = front;
 
-  return RootNode;
+     //Step 2 continue to find deepest node
+     if(front.first->LeftChild != nullptr)
+     {
+        q.push(std::make_pair(front.first->LeftChild,front.first));
+     }
+
+     if(front.first->RightChild != nullptr)
+     {
+        q.push(std::make_pair(front.first->RightChild,front.first));
+     }
+   }
+
+   //Now if we didnt find target node we return root
+   if(target == nullptr)
+   {
+    std::cout << "\n Element not found\n";
+    return RootNode;
+   }
+
+   //Step 3 now swapping part is done here
+   TreeNode<T>*lastNode = last.first;
+   TreeNode<T>*lastNodeParent = last.second;
+
+   target->Data = lastNode->Data; //copy data. this is shallow copy if it has been a pointer then we had to use memcpy
+
+    //means iska mai baap h abhi zinda
+   if(lastNodeParent)
+   {
+     //check kon sa element delete karna left ya right most
+     if(lastNodeParent->LeftChild == lastNode)
+     {
+        lastNodeParent->LeftChild = nullptr;
+     }
+     else
+     {
+        lastNodeParent->RightChild = nullptr;
+     }
+     delete lastNode;
+   }
+   //Anath h ye iska koi mai baap nahi h . ab kuch nahi bacha
+   else
+   {
+    delete lastNode;
+    return nullptr;
+   }
+
+   return RootNode;
+
+
 }
 
 
