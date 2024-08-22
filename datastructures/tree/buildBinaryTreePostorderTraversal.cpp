@@ -33,6 +33,49 @@ void PostOrderTraversalRec(BinaryTree *root)
   }
 }
 
+//Here the concept is we take help of pre order traversal but reverse it with another stack
+//basically post order is reverse of pre order with left and right reverse also
+//means PostOrder = LeftRightRoot
+//Pre order = Root Left Right
+//Post order = reverse of pre order which is right left root
+//again reverse right and left or explore right before left we get left right root
+void PostOrderTwoStack(BinaryTree* root)
+{
+	std::stack<BinaryTree*>st1;
+	std::stack<int>st2;
+	std::cout << "\n Two Stacks Iterative \n";
+	
+	while(true)
+	{
+		while(root)
+		{
+			st2.push(root->data); //cout << root->data just like pre order
+			st1.push(root);
+			root = root->rightChild; //right instead of left
+		}
+		
+		if(st1.empty()) 
+		{
+			break;
+		}
+		
+		root = st1.top();
+		st1.pop();
+		root = root->leftChild;
+	}
+	
+	while(st2.empty() == false)
+	{
+		std::cout << st2.top() << ",";
+		st2.pop();
+	}
+}
+
+
+//here in this approach we insert two elements
+//when we traverse both child then only we print the node
+//so when popped element is different from stack top means 
+//we have explored both child ren so we can print the root val
 void PostOrderTraversal(BinaryTree *root)
 {
   std::stack<BinaryTree*>st;
@@ -119,6 +162,7 @@ int main()
  node2->rightChild = node6;
   std::cout << "\n RECURSIVE TRAVERSAL \n";
   PostOrderTraversalRec(rootNode);
+  PostOrderTwoStack(rootNode);
   PostOrderTraversal(rootNode);
   PostOrderTraversalOptimized(rootNode);
   
