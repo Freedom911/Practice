@@ -1,9 +1,9 @@
 //Program To Find Height of a given Tree.
 //We will do both recursively and non recursively
 //For iterative we will simply do level order traversal and return the height
-//we can also do inorder traversal but we will have to remember previous hiehg for that
 //For recurseively we will simply go deep downthe left and then right and compare which has
 //more height and will return that
+//We also do postorder iterative . explained below
 //https://www.geeksforgeeks.org/write-a-c-program-to-find-the-maximum-depth-or-height-of-a-tree/
 #include <iostream>
 #include <queue>
