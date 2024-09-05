@@ -36,7 +36,7 @@ int solve(Tree* root,int &res)
 	return rootInvolved;
 }
 
-//Hypothesis
+//Hypothesis- No the dp is not there since it is not overlapping. 
 int solveDP(Tree* root,int &res,std::unordered_map<Tree*,int>&us)
 {
 	//Base condition
@@ -48,6 +48,7 @@ int solveDP(Tree* root,int &res,std::unordered_map<Tree*,int>&us)
 	int r = -1;
 	if(us.find(root->left) != us.end())
 	{
+		std::cout << "\n Is Null Left " << (root->left == nullptr) << "\n";
 		l =  us[root->left];
 	}
 	else
@@ -58,6 +59,7 @@ int solveDP(Tree* root,int &res,std::unordered_map<Tree*,int>&us)
 	
 	if(us.find(root->right) != us.end())
 	{
+				std::cout << "\n Is Null right " << (root->right == nullptr) << "\n";
 		r = us[root->right];
 	}
 	else
