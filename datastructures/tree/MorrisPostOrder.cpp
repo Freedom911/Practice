@@ -9,7 +9,10 @@
  node.
  
  In Post order morris traversal we do ulta that is we move to right instead of left
- It is mirror image of pre order. we push ans in array and then reverse
+  we push ans in array and then reverse because only reverse we will have right left root 
+  but we want left right root. so we explore right first . also in postorder successor we are basically
+  connecting the left node to inorder predessor. in pre and inorder we connect a nodes right side to
+  inorder successor
  */
 
 
@@ -64,7 +67,7 @@ void MorrisTraversal(BinaryTree*Root)
 		{
 
 			BinaryTree*Prev = Curr->rightChild;
-			
+			//Finding inorder predecessor
 			while(Prev->leftChild != nullptr && Prev->leftChild != Curr)
 				Prev = Prev->leftChild;
 			
