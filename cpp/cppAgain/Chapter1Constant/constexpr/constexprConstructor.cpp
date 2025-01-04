@@ -6,7 +6,8 @@ class Fruit
 };
 
 //This will give error It should not have virtual base class
-class Apple// : virtual public Fruit
+//class Apple : virtual public Fruit
+class Apple : public Fruit
 {
   public:
 
