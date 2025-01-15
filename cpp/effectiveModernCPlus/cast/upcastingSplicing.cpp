@@ -37,7 +37,7 @@ class Square:public Shape
 //OBJECT SLICING WILL HAPPEN HERE
 void start(Shape s)
 {
-  s.draw();
+  s.draw(); //It will call Shape function even when it is virtual
 }
 
 int main()

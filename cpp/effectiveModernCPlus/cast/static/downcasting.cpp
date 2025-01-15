@@ -28,12 +28,13 @@ int main()
   A &a = b; //Upcastingn implicit
   //A &a = static_cast<A&>(b); //Can also be used in upcasting
 
-  a.hello(); // will print Bs
+  a.hello(); // will print A
 
   //To DO DOWNCASTING i.e from parent to child
    //B b1  = a;//will give error
-   B &b1 = static_cast<B&>(a);
+   A c;
+   B &b1 = static_cast<B&>(c);
 
-   b1.hello();
+   b1.hello(); // Will Print B
 
 }

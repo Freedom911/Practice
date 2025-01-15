@@ -23,5 +23,10 @@ int main()
 	{
 		std::cout << "\n Side Cast Failed \n";
 	}
+    else
+    {
+        std::cout << "\n Side Cast Passed \n"; //this will happen
+    }
+
 		
 }

@@ -19,6 +19,7 @@ int main()
 {
  const ABC a;
  a.ftoo();
+ //a.foo(); this will give error
  ABC aa;
  aa.ftoo();
 }
