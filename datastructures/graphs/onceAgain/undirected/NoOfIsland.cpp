@@ -19,77 +19,106 @@
 
 #include <iostream>
 #include <vector>
+#include <queue>
 
-void BFS()
+void dfs(int row,int col,std::vector<std::vector<int>>&visited,std::vector<std::vector<char>> &grid)
 {
+    visited[row][col] = 1;
+    int tr = grid.size();
+    int tc = grid[0].size();
+
+    //now to get adjaceny list we know for a cell there will be 8 directions
+    for(int i = -1; i <= 1; i++)
+    {
+        for(int j = -1; j <= 1; j++)
+        {
+            int actRow = row + i;
+            int actCol = col + j;
+
+            //check if the index is valid
+            if(actRow >= 0 && actCol >= 0 && actRow < tr && actCol < tc && visited[actRow][actCol] == 0 &&
+                    grid[actRow][actCol] == '1')
+            {
+                //modifying the grid as well
+                dfs(actRow,actCol,visited,grid);
+            }
+
+        }
+    }
+}
+
+void bfs(int sr,int sc,std::vector<std::vector<int>>&visited,std::vector<std::vector<char>> &grid)
+{
+    std::queue<std::pair<int,int>>q;
+    q.push({sr,sc});
+    visited[sr][sc] = 1;
+    int tr = grid.size();
+    int tc = grid[0].size();
+
+    while(q.empty() == false)
+    {
+        int row = q.front().first;
+        int col = q.front().second;
+        q.pop();
+        //now to get adjaceny list we know for a cell there will be 8 directions
+        for(int i = -1; i <= 1; i++)
+        {
+            for(int j = -1; j <= 1; j++)
+            {
+                int actRow = row + i;
+                int actCol = col + j;
+                if(actRow >= 0 && actCol >= 0 && actRow < tr && actCol < tc && visited[actRow][actCol] == 0 &&
+                        grid[actRow][actCol] == '1')
+                {
+                    visited[actRow][actCol] = 1;
+                    q.push({actRow,actCol});
+
+                }
+            }
+        }
+
+
+    }
 
 }
 
-int GetIslands(std::vector<std::vector<char>> grid)
+//Gets The number of island
+int GetIslands(std::vector<std::vector<char>> &grid)
 {
-    if(grid.size() == 0)
-    {
-        return -1;
-    }
     int tr = grid.size();
     int tc = grid[0].size();
-    
-    //Initialization in queue
-    std::vector<std::vector<int>> visited(tr,std::vector<int>(tc,0));
-    std::queue<std::pair<int,int>>q;
+
+    std::vector<std::vector<int>>visited(tr,std::vector<int>(tc,0));
+    int cnt = 0;
     for(int i = 0; i < tr; i++)
     {
         for(int j = 0; j < tc; j++)
         {
-            if(grid[i][j] == '1')
+            if(visited[i][j] == 0 && grid[i][j] == '1') //means land not visited yet
             {
-                q.push({i,j});
-                visited[i][j] = 1;
+                //dfs(i,j,visited,grid);
+                bfs(i,j,visited,grid);
+                cnt++;
             }
         }
     }
 
-    //for all components/lands
-    for(int i = 0; i < tr; i++)
-    {
-        for(int j = 0; j < tc; j++)
-        {
-               if(visited[i][j] == 0 &&  grid[i][j] == '1') //it is a island
-               {
-                   BFS(i,j,q,visited,grid);
-                   cnt++;
-               }
-          
-        }
-    }
+    return cnt;
 
-    while(q.empty() == false)
-    {
-       int row = q.front().first;
-       int col = q.front().second;
-       q.pop();
 
-       for(int i = -1; i <= 1; i++)
-       {
-           for(int j = -1; j <= 1; j++)
-           {
-               int actRow = row + i;
-               int actCol = col + j;
 
-               //validity Check
-               if(actRow >= 0 && actCol >= 0 && actRow < tr && actCol < tc && visited[actRow][actCol] == 0 &&
-                  grid[actRow][actCol] == '1') //it is a island
-               {
-                      q.push({actRow,actCol});
-                      visited[actRow][actCol] = 1;
-               }
-           }
-       }
-
-    } 
 }
 
 int main()
 {
+    // n: row, m: column
+    std::vector<std::vector<char>> grid
+    {
+        {'0', '1', '1', '1', '0', '0', '0'},
+            {'0', '0', '1', '1', '0', '1', '0'}
+    };
+
+
+    std::cout << GetIslands(grid) << "\n";
 }
 
