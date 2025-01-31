@@ -77,8 +77,8 @@ int main()
     std::for_each(vec.begin(),vec.end(),lamTempPrint);
     
 
-                        //passing by reference as for each doesnt update value
-                        //so when modified inside the lambda changes are refelected
+    //passing num by reference as for each doesnt update value
+    //so when modified inside the lambda changes are refelected
     auto lam4 = [&dist,&rng](int &num){
         num = num + dist(rng);//genereates random Number
     };
