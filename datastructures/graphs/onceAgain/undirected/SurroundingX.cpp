@@ -30,7 +30,7 @@ std::vector<std::vector<char>> SurroundingBFS(std::vector<std::vector<char>> &ma
 	int tc = mat[0].size();
 	
 	std::vector<std::vector<int>> vis(tr,std::vector<int>(tc,0));
-	std::vector<std::vector<char>> op = mat;
+	std::vector<std::vector<char>> op(tr,std::vector<char>(tc,'X'));
 	std::queue<std::pair<int,int>>q;
 	
 	//2. Initialization. Exploring On Boundaries
@@ -78,7 +78,7 @@ std::vector<std::vector<char>> SurroundingBFS(std::vector<std::vector<char>> &ma
 			if(ar >=0 && ac >= 0 && ar < tr && ac < tc && vis[ar][ac] == 0 && mat[ar][ac] == 'O')
 			{
 				vis[ar][ac] = 1;
-				
+                q.push({ar,ac});
 			}
 		}
 		
@@ -90,23 +90,97 @@ std::vector<std::vector<char>> SurroundingBFS(std::vector<std::vector<char>> &ma
 		{
 			if(vis[i][j] == 1 && mat[i][j] == 'O')
 			{
-				std::cout << "\n HERE \n";
-				op[i][j] = 'X';
+				op[i][j] = 'O';
 			}
 		}
 	}
-	
 	return op;
+}
+
+
+void DFS(int row,int col,const std::vector<std::vector<char>> &mat,std::vector<std::vector<int>> &vis)
+{
+    vis[row][col] = 1;
+
+    int dr[4] = {-1,0,1,0};
+    int dc[4] = {0,1,0,-1};
+    int tr = mat.size();
+    int tc = mat[0].size();
+
+    for(int i = 0; i < 4; i++)
+    {
+        int ar = dr[i] + row;
+        int ac = dc[i] + col;
+
+	    if(ar >=0 && ac >= 0 && ar < tr && ac < tc && vis[ar][ac] == 0 && mat[ar][ac] == 'O')
+        {
+            DFS(ar,ac,mat,vis);
+        }
+    }
+}
+
+std::vector<std::vector<char>> SurroundingDFS(std::vector<std::vector<char>> &mat)
+{
+	//1.Check 
+	if(mat.size() == 0 || mat[0].size() == 0)
+	{
+		return {};
+	}
 	
+	int tr = mat.size();
+	int tc = mat[0].size();
+	
+	std::vector<std::vector<int>> vis(tr,std::vector<int>(tc,0));
+	std::vector<std::vector<char>> op(tr,std::vector<char>(tc,'X'));
+	
+	//2. Initialization. Exploring On Boundaries
+	//1st and last column
+	for(int i = 0; i < tr; i++)
+	{
+		if(mat[i][0] == 'O') 
+		{
+            DFS(i,0,mat,vis);
+		}
+		 if(mat[i][tc-1] == 'O')
+		{
+            DFS(i,tc-1,mat,vis);
+		}
+	}
+	
+	//Exploring 1st and last row
+	for(int j = 0; j < tc; j++)
+	{
+		if(mat[0][j] == 'O')
+		{
+            DFS(0,j,mat,vis);
+		}
+		 if (mat[tr-1][j] == 'O')
+		{
+            DFS(tr-1,j,mat,vis);
+		}
+	}
+	
+	
+	for(int i = 0; i <  tr; i++)
+	{
+		for(int j = 0; j < tc; j++)
+		{
+			if(vis[i][j] == 1 && mat[i][j] == 'O')
+			{
+				op[i][j] = 'O';
+			}
+		}
+	}
+	return op;
 }
 
 
 int main()
 {
 	 std::vector<std::vector<char>> mat{
-        {'X', 'X', 'X', 'X'}, 
         {'X', 'O', 'X', 'X'}, 
-        {'X', 'O', 'O', 'X'}, 
+        {'X', 'O', 'X', 'X'}, 
+        {'X', 'X', 'O', 'X'}, 
         {'X', 'O', 'X', 'X'}, 
         {'X', 'X', 'O', 'O'}
     };
@@ -122,14 +196,17 @@ int main()
 	
 	std::for_each(mat.begin(),mat.end(),lambdaElement);
 	
-	
-	std::cout << "\n After Processing \n";
+	std::cout << "\n After Processing VIA BFS \n";
 	
 	std::vector<std::vector<char>> res = SurroundingBFS(mat);
 	
 	std::for_each(res.begin(),res.end(),lambdaElement);
-	
 
+	std::cout << "\n After Processing VIA DFS \n";
+	
+	 res = SurroundingDFS(mat);
+	
+	std::for_each(res.begin(),res.end(),lambdaElement);
 	
 	
   }
