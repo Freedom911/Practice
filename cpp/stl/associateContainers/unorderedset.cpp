@@ -13,4 +13,8 @@ int main()
   {
     std::cout << f << " ";
   }
+
+  //unordered set /or map cannot have vector or pair. we need to provide hash
+  //as for unordered we require hashing. for normal results are stored as red black tree which
+  //doesnt require hashing
 }
