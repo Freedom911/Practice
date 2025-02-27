@@ -92,8 +92,8 @@ bool isBipartite(int V, std::vector<int>adj[])
         {
             //Start Exploring
             //False means in the bfs traversal we ofund that it is not bi partite
-            //if(bfs(i,color,adj) == false)
-            if(dfs(i,0,color,adj) == false)
+            if(bfs(i,color,adj) == false)
+            //if(dfs(i,0,color,adj) == false)
             {
                 std::cout << "\nFAIL\n";
                 return false;
