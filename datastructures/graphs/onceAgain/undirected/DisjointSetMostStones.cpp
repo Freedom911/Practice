@@ -63,7 +63,7 @@ class DisjointSet
 
         bool UnionBySize(int u,int v)
         {
-            std::cout << u << "-" << v << "\n";
+            
             int setV = findUPar(v);
             int setU = findUPar(u);
             if(setU == setV)
@@ -75,11 +75,13 @@ class DisjointSet
             {
                 //merge set u with set v
                 Size[setV] += Size[setU];
+				//std::cout << u << "-" << v << " " << Size[setV] << "\n";
                 IsPartOf[setU] = setV;
             }
             else
             {
                 Size[setU] += Size[setV];
+				//std::cout << u << "-" << v << " " << Size[setU] << "\n";
                 IsPartOf[setV] = setU;
             }
             return true;
@@ -94,56 +96,82 @@ int maxRemove(std::vector<std::vector<int>> &stones,int n)
         maxRow = std::max(maxRow, it[0]);
         maxCol = std::max(maxCol, it[1]);
     }
-    std::cout << "\n Max= " << maxRow << " " << maxCol << "\n";
-    DisjointSet ds(n * n );
+	
+	int totalCol = maxCol + 1;
+	int totalRow = maxRow + 1;
+    
+    DisjointSet ds( totalRow * totalCol);
+	int vis[totalRow][totalCol]={}; //initializes to 0
+
 
     for(int i = 0; i < stones.size(); i++)
     {
         int queryRow = stones[i][0];
         int queryCol = stones[i][1];
+		vis[queryRow][queryCol] = 1;
+		
 
-
-        int node = queryRow * maxCol + queryCol;
+        int node = (queryRow * totalCol) + queryCol;
 
         //for same row
-        for(int j = 0; j < maxCol && j != queryCol; j++)
+        for(int j = 0; j < totalCol ; j++)
         {
-            int adj = queryRow * maxCol + j;
-            ds.UnionBySize(adj,node);
+			if(j == queryCol || vis[queryRow][j] == 0)
+				continue;
+
+            int adj = (queryRow * (totalCol)) + j;
+			
+			
+            ds.UnionBySize(node,adj);
         }
 
         //for same col
-        for(int j = 0; j < maxRow && j != queryRow; j++)
+		
+        for(int j = 0; j < totalRow ; j++)
         {
-            int adj = j * maxCol + queryCol;
-            ds.UnionBySize(adj,node);
+			if(j == queryRow || vis[j][queryCol] == 0)
+				continue;
+            int adj = j * (totalCol) + queryCol;
+			
+            ds.UnionBySize(node,adj);
         }
     }
     
     int total = 0;
     for(int i = 0; i < ds.Size.size(); i++)
     {
+		
         if(i == ds.IsPartOf[i])
         {
-            total += ds.Size[i] - 1;
+	
+            total += (ds.Size[i] - 1);
         }
     }
+	std::cout << "\n";
     return total;
 
 }
 
 int main() 
 {
-
+#if 1
     int n = 6;
     std::vector<std::vector<int>> stones = {
         {0, 0}, {0, 2},
         {1, 3}, {3, 1},
         {3, 2}, {4, 3}
     };
+	#else
+	int n = 3;
+    std::vector<std::vector<int>> stones = {
+        {0, 0}, {0,1},
+        {1, 0}
+    };
+	#endif
 
     int ans = maxRemove(stones, n);
     std::cout << "The maximum number of stones we can remove is: " << ans << std::endl;
     return 0;
 }
+
 
