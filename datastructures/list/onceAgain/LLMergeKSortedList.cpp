@@ -50,19 +50,6 @@ struct LL
 };
 
 
-//Adds remaining nodes to Tail
-//Passing reference to a pointer as we want head to become null once it is returned
-//same for tail we want to update the tail
-void AddPendingNodes(LL*& Tail,LL*&Head)
-{
-    while(Head)
-    {
-        Tail->next = Head;
-        Head = Head->next;
-        Tail = Tail->next;
-    }
-}
-
 //this Function is responisble for merging two sorted linked list
 //and returns the head pointer
 LL *MergeTwo(LL*Head1, LL*Head2)
@@ -100,8 +87,15 @@ LL *MergeTwo(LL*Head1, LL*Head2)
         Tail = Tail->next;
     }
 
-    AddPendingNodes(Tail,Head1);
-    AddPendingNodes(Tail,Head2);
+    if(Head1)
+    {
+        Tail->next = Head1;//Seedha Join
+    }
+    else if(Head2)
+    {
+        Tail->next = Head2;
+    }
+
 
     LL* newHead = Dummy->next;
     delete Dummy;

@@ -36,6 +36,9 @@
 	 }
  };
  
+ //We are using Tortoise and Hare.By Default it retrusn middle +1 
+ //to get middle element we have to give fast ptr head start by 1
+ //fast = head->next:
  LinkedList * returnMiddleElement(LinkedList *Head)
  {
 	 if(Head == nullptr)
