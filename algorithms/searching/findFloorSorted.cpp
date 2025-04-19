@@ -1,3 +1,12 @@
+/**
+ * We Need to Find The Floor and Ceil in sorted array.
+ * For Floor and Ceil if element is already present then we return the element directly
+ * For Floor we return the lesser element . we could use linear search but to optimize we 
+ * use bs. so the conecept is if element found we directly return else for floor when the elemnt
+ * to find is greater than than arr mid so mid is a candidate for floor for that element
+ * SImilalry for Ceil
+ */ 
+
 #include <iostream>
 #include <vector>
 #include <limits>
@@ -14,45 +23,6 @@ int findFloor(std::vector<int> v,int k)
 {
   std::cout << "FINDING FLOOR OF " << k << " in array " << "\n";
   std::cout << v << "\n";
-  int min = std::numeric_limits<int>::max();
-  int p = 0;
-  int q = v.size() - 1;
-  int mid = -1,minIndex;
-  while(p <= q)
-  {
-    mid = p + (q-p)/2;
-    if(v[mid] == k)
-      return v[mid];
-
-    if(k > v[mid])
-    {
-      p = mid + 1;
-      if(min > (k - v[mid]))
-      {
-        min = k - v[mid];
-        minIndex = mid;
-      }
-    }
-    else
-    {
-      q= mid - 1;
-    }
-
-  }
-  if(min != std::numeric_limits<int>::max())
-  return v[minIndex];
-  else
-    return -1;
-}
-
-int findCeil(std::vector<int> v,int k)
-{ 
-
-  std::cout << "FINDING CIEL OF " << k << " in array " << "\n";
-  std::cout << v << "\n";
-  if(k < v[0])
-    return v[0];
-  int min = std::numeric_limits<int>::max();
   int p = 0;
   int q = v.size() - 1;
   int mid = -1,minIndex = -1;
@@ -65,17 +35,45 @@ int findCeil(std::vector<int> v,int k)
     if(k > v[mid])
     {
       p = mid + 1;
-      if(min > (k - v[mid]))
-      {
-        min = k - v[mid];
-        minIndex = mid + 1;
-        if(minIndex >= v.size())
-          return -1;
-      }
+      minIndex = mid;
+    }
+    else
+    {
+      q = mid - 1;
+    }
+
+  }
+  if(minIndex != -1)
+  {
+      return v[minIndex];
+  }
+  return minIndex;
+}
+
+int findCeil(std::vector<int> v,int k)
+{ 
+
+  std::cout << "FINDING CIEL OF " << k << " in array " << "\n";
+  std::cout << v << "\n";
+  if(k < v[0])
+    return v[0];
+  int p = 0;
+  int q = v.size() - 1;
+  int mid = -1,minIndex = -1;
+  while(p <= q)
+  {
+    mid = p + (q-p)/2;
+    if(v[mid] == k)
+      return v[mid];
+
+    if(k > v[mid])
+    {
+      p = mid + 1;
     }
     else
     {
       q= mid - 1;
+      minIndex = mid;
     }
 
   }
