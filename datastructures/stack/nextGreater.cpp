@@ -40,6 +40,8 @@ void findNextGreater(std::vector<int> no)
 //Here the logic is we will traverse from end 
 //and will keep poping the stack until the stack top is bigger than array
 //then this no is the next greatest and we store in array
+//for right side we can do also in order. we can keep and index in stack as well
+//when popping we fill Next greater for that element
 void findNGEInOrder(std::vector<int> no)
 {
   std::cout << "\n IN ORDER \n"; 
