@@ -1,4 +1,5 @@
 #include <iostream>
+#include <mutex>
 
 //For A Single Ton Class we need to ensure only one instance of
 //a class is there . This is a type of object creational design pattern
@@ -8,17 +9,14 @@ using  Actors = int;
 class GameWorld
 {
   public:
-    //1st Thing Provide a function to get the instance of object
-    //Need to make it static so that it can be called without object
-    //
-    //NEW CONCEPT IN C++11 already in gcc (C++03)
-    //if we have static variable in  a function then it will be thread safe
-    //that is other variable will wait
-    static GameWorld &GetInstance()
+    static GameWorld *GetInstance()
     {
-      static GameWorld instance;
-      return instance;
+      std::call_once(initInstanceFlag,initSingleTon);
+      return Instance;
     }
+
+    //Other Mechnaism
+
 
 
     //Need To Make Copy Constructor private or delete to avoid copying
@@ -28,12 +26,26 @@ class GameWorld
 
     static int SpawnActors(int totalActorsToSpawn)
     {
-        return GetInstance().ISpawnActors(totalActorsToSpawn);
+        if(Instance)
+        {
+            return Instance->ISpawnActors(totalActorsToSpawn);
+        }
+        else
+        {
+            return -1;
+        }
     }
 
   private:
-    GameWorld() {};
+    GameWorld() = default;
 
+    static void initSingleTon()
+    {
+        std::cout << "\n Here \n";
+        Instance = new GameWorld();
+    }
+
+    //NOT PART OF SINGLETON-------------------------------------------
     //I Means Implmentationi
     int ISpawnActors(int totalActorsToSpawn)
     {
@@ -46,14 +58,22 @@ class GameWorld
     }
     //using int Actors;
     int totalActorsInWorld;
+    //NOT PART OF SINGLETON-------------------------------------------
+
+
+    static std::once_flag initInstanceFlag;
+    static GameWorld *Instance;
 
 
 };
 
+GameWorld * GameWorld::Instance;
+std::once_flag GameWorld::initInstanceFlag;
+
 int main()
 {
   //This will Give Error
-   //GameWorld world = GameWorld::GetInstance(); // Here we are returning reference but this will call copy constructor
+   GameWorld *world = GameWorld::GetInstance(); // Here we are returning reference but this will call copy constructor
    //GameWorld &world = GameWorld::GetInstance(); //works Just hiding to make it more convient to call functions
   std::cout << GameWorld::SpawnActors(100);
 }
