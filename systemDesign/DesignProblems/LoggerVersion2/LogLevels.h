@@ -1,0 +1,11 @@
+#pragma once
+
+namespace UE
+{
+    enum class LogLevel : int
+    {
+        INFO = 0,
+        WARNING = 1,
+        ERROR = 2
+    };
+};
