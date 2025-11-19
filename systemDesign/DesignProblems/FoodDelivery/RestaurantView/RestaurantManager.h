@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Restaurant.h"
+#include <vector>
 
 //Single ton Class
 class RestaurantManager
@@ -39,6 +40,21 @@ class RestaurantManager
     {
         restaurants = m_restaurants;
     }
+
+
+    Restaurant*  SearchRestaurant(std::string location)
+    {
+        for(int i = 0; i < m_restaurants.size(); i++)
+        {
+            if(m_restaurants[i].GetAddress() == location)
+            {
+                return &m_restaurants[i];
+            }
+        }
+
+        return nullptr;
+    }
+
 
 
     private:
