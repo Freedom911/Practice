@@ -49,7 +49,8 @@ double getMinMaxDistance(const std::vector<int> &stations,const int &totalAddSta
 
 int main()
 {
-  std::cout << "\n Minimum Distance is = " << getMinMaxDistance({1,5,10},2) << "\n";
+  std::cout << "\n Minimum Distance is = " << getMinMaxDistance({1,5,8,10},2) << "\n";
+  std::cout << "\n Minimum Distance is = " << getMinMaxDistance({3,9,12,16,20},3) << "\n";
   //std::cout << "\n Minimum Distance is = " << getMinMaxDistance({1,2,3,4,5,6,7,8,9,10},9) << "\n";
 }
 
