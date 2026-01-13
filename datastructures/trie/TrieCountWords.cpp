@@ -240,7 +240,6 @@ int main()
     trie.Insert("alooparantha");
     trie.Insert("aloochaat");
     trie.Print();
-    return 0;
 
     trie.CheckStringExists("alooparantha");
     trie.CheckStringExists("hat");

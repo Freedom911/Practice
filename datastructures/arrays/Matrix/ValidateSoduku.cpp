@@ -86,6 +86,15 @@ bool isValid(std::vector<std::vector<int>> &mat)
         return false;
     }
 
+    //We need not do three loops for row checking
+    //0 to 9 we do 
+    //for(int i = 0; i < 9;i++)
+    //mat[row][i] 
+    //mat[i][col]
+    //and for submatrix we 3 * (row /3) will get the starting of submatrix and i/3 will increment by 0,1,2
+    //same for col
+
+
     //For Each Column.validate for each row
     for (int j = 0; j < 9; j++)
     {
