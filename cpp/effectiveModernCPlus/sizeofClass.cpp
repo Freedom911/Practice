@@ -8,8 +8,10 @@ class E
 
 class D1:public E{};
 
+//Computer adds virtual base pointer
 class D2:virtual public E{};
 
+//size comes 9 afterbut compiler pads
 class D3:virtual public E
 {
   char c;
