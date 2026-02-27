@@ -33,7 +33,7 @@ int solve(Tree* root,int &res)
 	int rootNotInvolved = l + r + 1; //this would always be bigger than root involved
 	res = std::max(res,std::max(rootInvolved,rootNotInvolved));
 	
-	return rootInvolved;
+	return rootInvolved; //this is basically height
 }
 
 //Hypothesis- No the dp is not there since it is not overlapping. 

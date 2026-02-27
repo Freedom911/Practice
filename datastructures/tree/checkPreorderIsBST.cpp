@@ -1,6 +1,20 @@
 //Given a preorder traversal check if the tree is a binary search tree
 //https://www.geeksforgeeks.org/check-if-a-given-array-can-represent-preorder-traversal-of-binary-search-tree/
 //Prerequiste To Find Next Greater Array. Logic Defined in my notebook in one drive
+/**
+ * The Rule: Once you move to a right subtree, you can never see a value smaller than the "parent" of that right subtree again. 
+ * The root variable in your code acts as this "threshold" or "floor."
+ * 
+ * Why the "Next Greater Element" logic works
+Think of the stack as the current path from the root down to the left.
+
+As long as we find smaller numbers, we are just piling up potential "parents" on the stack.
+
+When we find a Next Greater Element, it means we are "turning right."
+
+By popping the stack, we are finding exactly which parent this new element belongs to. 
+The last element popped is the immediate parent. Anything we encounter from here on must be greater than that parent.
+ */
 #include <iostream>
 #include <vector>
 #include <stack>

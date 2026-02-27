@@ -41,6 +41,8 @@ class custom_shared_ptr
       if(obj.m_ptr)
         (*this->m_refCount)++;
 
+      return *this;
+
     }
 
     //move constructor
@@ -50,12 +52,13 @@ class custom_shared_ptr
       this->m_refCount = rhs.m_refCount;
       rhs.m_ptr = rhs.m_refCount = nullptr;
     }
-    custom_shared_ptr operator = (custom_shared_ptr &&obj)
+    custom_shared_ptr &operator = (custom_shared_ptr &&obj)
     {
       cleanup();
       this->m_ptr = obj.m_ptr;
       this->m_refCount = obj.m_refCount;
       obj.m_ptr = obj.m_refCount = nullptr;
+      return *this;
     }
 
     ~custom_shared_ptr()

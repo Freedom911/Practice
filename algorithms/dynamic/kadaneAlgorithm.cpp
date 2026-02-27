@@ -9,6 +9,7 @@ class Solution{
     // arr: input array
     // n: size of array
     //Function to find the sum of contiguous subarray with maximum sum.
+    ////doesnt handles negative case also.
     int maxSubarraySum(int arr[], int n){
 
       // Your code here
@@ -34,6 +35,43 @@ class Solution{
 
     }
 };
+#if 0
+//handles negative case also.
+vector<int> maxSubarray(vector<int> arr) 
+{
+    int subSeqSum = 0;
+    int subArr = 0;
+    int maxTillNowSub = std::numeric_limits<int>::min();
+    int maxElementSoFor = std::numeric_limits<int>::min();
+
+
+    
+    for(int i = 0; i < arr.size(); i++)
+    {
+        maxElementSoFor = std::max(arr[i],maxElementSoFor);
+        if(arr[i] > 0)
+        {
+            subSeqSum += arr[i]; 
+        }
+
+        subArr += arr[i];
+
+        if(subArr < 0)
+        {
+            subArr = 0;
+        }
+
+        maxTillNowSub = std::max(subArr,maxTillNowSub);
+    }
+
+    if(maxElementSoFor <= 0)
+    {
+        return{maxElementSoFor,maxElementSoFor};
+    }
+
+    return {maxTillNowSub,subSeqSum};
+}
+#endif
 
 // { Driver Code Starts.
 

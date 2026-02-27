@@ -6,7 +6,7 @@ int main()
     int x  = 5;
     int y;
     auto lamb = [x]()  {return x + 5;};
-    //auto lamb = [&x](){return x + 5;};//but if used this then y = 20 after updating x as we are doing by ref
+    //auto lamb = [&x](){return x + 5;};
 
     y = lamb();
 

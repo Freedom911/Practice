@@ -8,7 +8,7 @@ void foo(int arr[5])
 }
 
 
-void loo(int (&arr)[5])
+void loo(int (&)arr[5])
 {
     std::cout << sizeof(arr) << "\n";
 }

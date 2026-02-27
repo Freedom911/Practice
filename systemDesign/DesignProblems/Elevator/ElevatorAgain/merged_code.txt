@@ -1,0 +1,635 @@
+--- MERGED CODE START --- 
+ 
+======================================== 
+FILE: BestElevatorAlgoCreator.h 
+======================================== 
+#pragma once
+
+/**
+ * Factory Class responible for choosing Best Elevator to Pick
+ */
+#include "ClosestElevator.h"
+#include "SelectElevatorStrategy.h"
+#include "ElevatorStrategyEnum.h"
+
+class BestElevatorAlgoCreator
+{
+    public:
+    std::unique_ptr<SelectElevatorStrategy> GetElevatorStrategy(ElevatorStrategyEnum strategy)
+    {
+        if(strategy == ElevatorStrategyEnum::CLOSEST)
+        {
+            return std::make_unique<ClosestElevator>();
+        }
+        return nullptr;
+    }
+};
+ 
+ 
+======================================== 
+FILE: ClosestElevator.h 
+======================================== 
+#pragma once
+#include <vector>
+#include "Elevator.h"
+#include "SelectElevatorStrategy.h"
+class ClosestElevator : public SelectElevatorStrategy
+{
+    public:
+
+     //we use direction and penalty system
+     //if elevator going up and user presses up button
+     //Cost = distance + DirectionPenalty + load penalty
+     //SO basically the load penalty means if the elevator is idle and it has to start moving. we choose 5
+     //now if the elevator is moving up and user is at upper floor then cost would be
+     // Cost = abs(current - destination) + 0 + 0; ..Direction penalty will be 0 since in same direction
+     //if user is down and elevator movinf awy then heavy penalty
+     //cost = abs(current - destinatino) + 100 + 0;
+
+     int GetBestElevator(const std::vector<std::unique_ptr<Elevator>> &elevators,
+        const int &lastEleavator,const Requests &req) override
+     {
+        //Just Pick the closest elevator
+        int minCost = std::numeric_limits<int>::max();
+        int currentBestElevator = 0;
+        for(int i = 0; i < elevators.size(); i++)
+        {
+
+            
+            int currentFloor = elevators[i]->GetCurrentFloor();
+            Direction direction = elevators[i]->GetCurrentDirection();
+            int destinFloor = req.floorDestination;
+            //Cost = distance + direction + load
+            int cost = 0;
+            int distancePenalty = std::abs(currentFloor - destinFloor);
+            int directionPenalty = 0,loadPenalty = 0;
+
+            if(direction == Direction::IDLE)
+            {
+                loadPenalty = 5;
+            }
+            else if(direction == Direction::DOWN)
+            {
+                if(currentFloor > destinFloor)//neche he going
+                {
+                    directionPenalty = 0;
+                }
+                else //destination is upper
+                {
+                    directionPenalty = 100;//give punishment as lift is going down 
+                }
+            }
+            else
+            {
+               if(currentFloor < destinFloor)//Up he going
+                {
+                    directionPenalty = 0;
+                }
+                else //destination is neche
+                {
+                    directionPenalty = 100;//give punishment as lift is going down 
+                }  
+            }
+            cost = distancePenalty + directionPenalty + distancePenalty;
+
+
+            if(cost <= minCost)
+            {
+                currentBestElevator = i;
+                minCost = cost;
+            }
+        }
+
+        return currentBestElevator;
+     }
+
+     ~ClosestElevator() = default;
+}; 
+ 
+======================================== 
+FILE: Direction.h 
+======================================== 
+#pragma once
+
+enum class Direction
+{
+    UP,
+    DOWN,
+    IDLE
+}; 
+ 
+======================================== 
+FILE: Elevator.h 
+======================================== 
+#pragma once
+
+#include "Requests.h"
+#include <queue>
+#include <iostream>
+#include "Subject.h"
+#include <set>
+#include <memory>
+#include <shared_mutex>
+#include <mutex>
+#include <atomic>
+#include "ElevatorMovement.h"
+
+class Elevator : public Subject
+{
+public:
+    Elevator(const int &minFloor,const int &maxFloor)
+    {
+        static std::atomic<int> g_elevatorID  {1};
+        m_elevatorID = g_elevatorID.fetch_add(1);
+        m_minFloor = minFloor;
+        m_maxFloor = maxFloor;
+        m_elevatorMovement = std::make_unique<ElevatorMovement>();
+        
+    }
+    void PushRequest(const Requests &req)
+    {
+        if(ValidRequest(req) == false)
+        {
+            std::cout << "\n Request Invalid \n";
+            return;
+        }
+        std::unique_lock<std::shared_mutex> ul(m_mutex);
+        if(m_currentFloor < req.floorDestination)
+        {
+            m_reqUp.insert(req);
+        }
+        else
+        {
+            m_reqDown.insert(req);
+        }
+        
+    }
+
+  
+    bool Step()
+    {
+        std::unique_lock<std::shared_mutex> ul(m_mutex);
+        return m_elevatorMovement->Step(this);
+    }
+
+
+
+    void Notify() override
+    {
+      for (auto e : ObserverList)
+      {
+          e->Update(m_elevatorID,m_currentFloor);
+      }
+    }
+
+    bool ValidRequest(const Requests &req)
+    {
+        if(req.floorDestination < m_minFloor || req.floorDestination > m_maxFloor)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    int GetCurrentFloor()
+    {
+        std::shared_lock<std::shared_mutex> ul(m_mutex);
+        return m_currentFloor;
+    }
+
+    Direction GetCurrentDirection()
+    {
+        std::shared_lock<std::shared_mutex> ul(m_mutex);
+        return m_currentDirection;
+    }
+
+    void SetFloorLimit(const int &minFloor,const int &maxFloor)
+    {
+        m_minFloor = minFloor;
+        m_maxFloor = maxFloor;
+    }
+
+    bool HasRequests()
+    {
+        return !m_reqDown.empty() || !m_reqUp.empty();
+    }
+
+
+friend class ElevatorMovement;
+private:
+    int m_elevatorID = 0;
+    int m_currentFloor = 0;
+    Direction m_currentDirection;
+    int m_minFloor;
+    int m_maxFloor;
+    std::shared_mutex m_mutex;
+    std::set<Requests> m_reqUp;//ascending
+    std::set<Requests,std::greater<Requests>> m_reqDown;//desceding
+    
+
+    
+    std::unique_ptr<ElevatorMovement> m_elevatorMovement;
+
+
+};
+ 
+ 
+======================================== 
+FILE: ElevatorMovement.h 
+======================================== 
+#pragma once
+
+
+class ElevatorMovement
+{
+   public:
+   bool Step(class Elevator *elevator);
+}; 
+ 
+======================================== 
+FILE: ElevatorStrategyEnum.h 
+======================================== 
+#pragma once
+
+enum class ElevatorStrategyEnum
+{
+    CLOSEST
+}; 
+ 
+======================================== 
+FILE: ElevatorSystem.h 
+======================================== 
+#pragma once
+#include <vector>
+#include "Elevator.h"
+#include "Requests.h"
+#include "SelectElevatorStrategy.h"
+#include "BestElevatorAlgoCreator.h"
+#include <thread>
+#include <condition_variable>
+
+class ElevatorSystem
+{
+public:
+    static ElevatorSystem &GetInstance()
+    {
+        static ElevatorSystem system;
+        return system;
+    }
+
+    ElevatorSystem(const ElevatorSystem &system) = delete;
+    ElevatorSystem &operator=(const ElevatorSystem &rhs) = delete;
+
+    void Initialize(const int &totalElevators, const ElevatorStrategyEnum &strategy,
+                    std::vector<Observer *> observers, const int &minFloor, const int &maxFloor)
+    {
+
+        m_elevators.resize(totalElevators);
+
+        for (int i = 0; i < totalElevators; i++)
+        {
+            m_elevators[i] = std::make_unique<Elevator>(minFloor, maxFloor);
+            for (auto obs : observers)
+            {
+                m_elevators[i]->Register(obs);
+            }
+        }
+
+        m_currentIndex = 0;
+        BestElevatorAlgoCreator obj;
+        m_bestStrategy = obj.GetElevatorStrategy(strategy);
+
+        m_thread = std::thread{&ElevatorSystem::Start, this};
+    }
+
+    void DoRequest(const Requests &req)
+    {
+        std::cout << "\n REQUESTING for FLoor = " << req.floorDestination;
+        std::unique_lock<std::mutex> ul(m_mux);
+        m_currentIndex = m_bestStrategy->GetBestElevator(m_elevators, m_currentIndex, req);
+        std::cout << "  LIFT = " << m_currentIndex << "\n";
+        m_elevators[m_currentIndex]->PushRequest(req);
+        ul.unlock();
+        m_cv.notify_one();
+    }
+
+    void End()
+    {
+        std::unique_lock<std::mutex> ul(m_mux);
+        m_exitFlag = true;
+        ul.unlock();
+        m_cv.notify_one();
+
+        if (m_thread.joinable())
+        {
+            std::cout << "\n JOINOING \n";
+            m_thread.join();
+        }
+    }
+
+private:
+    ElevatorSystem() = default;
+
+    // WIll be in thread
+    void Start()
+    {
+
+        while(m_exitFlag == false)
+        {
+            //Wake up
+             std::unique_lock<std::mutex> ul(m_mux);
+
+            m_cv.wait(ul, [this]
+                  { 
+                     if(m_exitFlag == true)
+                     {
+                        return true;
+                     }    
+                     for(auto &e : m_elevators)
+                     {
+                        if(e->HasRequests())
+                        {
+                            return true;//new request is there so proeed
+                        }
+                     }
+                     return false;
+                });
+
+                if(m_exitFlag == true)
+                {
+                    return;
+                }
+
+                //now we need to proceed and we step all elevators if new request is there
+                bool anybodyMoving = true;
+                while(anybodyMoving && m_exitFlag == false)
+                {
+                    anybodyMoving = false;
+                    for(auto &e : m_elevators)
+                    {
+                        if(e->Step())
+                        {
+                            anybodyMoving = true;
+                        }
+                    }
+                    //Simulate Moving
+                    if(anybodyMoving)
+                    {
+                        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+                    }
+                }
+        }
+    }
+
+
+       
+    std::vector<std::unique_ptr<Elevator>> m_elevators;
+    std::unique_ptr<SelectElevatorStrategy> m_bestStrategy;
+    std::condition_variable m_cv;
+    std::mutex m_mux;
+    int m_currentIndex;
+    std::thread m_thread;
+    bool m_exitFlag = false;
+}; 
+ 
+======================================== 
+FILE: Observer.h 
+======================================== 
+#pragma once
+#include <iostream>
+
+class Observer
+{
+  public:
+  virtual void Update(const int &elevatorid,const int &floor) = 0;
+};
+ 
+ 
+======================================== 
+FILE: Requests.h 
+======================================== 
+
+#pragma once
+#include "Direction.h"
+struct Requests
+{
+    Direction direction;
+    int floorDestination;
+
+    Requests(Direction dir = Direction::IDLE,int floor = 0)
+    {
+        direction = dir;
+        floorDestination = floor;
+    }
+
+    bool operator < (const Requests &bc) const
+    {
+        if (floorDestination != bc.floorDestination)
+        return floorDestination < bc.floorDestination;
+    return direction < bc.direction; // Tie-breaker
+    }
+
+    bool operator > (const Requests &bc) const
+    {
+        if (floorDestination != bc.floorDestination)
+        return floorDestination > bc.floorDestination;
+    return direction > bc.direction; // Tie-breaker
+    }
+}; 
+ 
+======================================== 
+FILE: SelectElevatorStrategy.h 
+======================================== 
+#pragma once
+#include <vector>
+#include "Elevator.h"
+class SelectElevatorStrategy
+{
+    public:
+
+    virtual int GetBestElevator(const std::vector<std::unique_ptr<Elevator>> &elevators,const int &lastEleavator,const Requests &req) = 0;
+    virtual ~SelectElevatorStrategy() = default;
+}; 
+ 
+======================================== 
+FILE: Subject.h 
+======================================== 
+#pragma once
+#include <iostream>
+#include <string>
+#include <unordered_set>
+#include <mutex>
+#include "Observer.h"
+
+class Subject
+{
+  public:
+  //virtual void Register(class Observer *observer) = 0;
+  //virtual void UnRegister(class Observer * observer) = 0;
+  //virtual void Notify() = 0;
+
+
+  virtual void Register(class Observer *observer)
+  {
+    std::lock_guard<std::mutex> lg(m_mux);
+    ObserverList.insert(observer);
+  }
+  virtual void UnRegister(class Observer * observer)
+  {
+    std::lock_guard<std::mutex> lg(m_mux);
+     ObserverList.erase(observer);
+  }
+  virtual void Notify() = 0;
+  
+  protected:
+  std::unordered_set<class Observer*> ObserverList;
+  std::mutex m_mux;
+
+};
+ 
+ 
+======================================== 
+FILE: UserObserver.h 
+======================================== 
+#pragma once
+
+#include "Observer.h"
+
+
+class UserObserver : public Observer
+{
+    public:
+    UserObserver(const std::string &name)
+    {
+        m_name = name;
+    }
+    ~UserObserver()
+    {
+    }
+    void Update(const int &elevatorid,const int &floor) override
+    { 
+       std::cout << "\n User = " << m_name << " Observed Elevator ID = " <<  elevatorid << " At Floor = " << floor << "\n";
+    }
+
+    private:
+    std::string m_name{};
+}; 
+ 
+======================================== 
+FILE: ElevatorMovement.cpp 
+======================================== 
+#include "Elevator.h"
+#include "ElevatorMovement.h"
+
+bool ElevatorMovement::Step(Elevator *elevator)
+{
+    bool isMoving = false;
+
+    //Algo?
+     //if elevator is moving up and user who is upper floor who also wants to go up 
+    //presses then elevator takes that request and 
+    if(elevator->m_currentDirection == Direction::UP)
+    {
+        //Find the next request
+        auto it = elevator->m_reqUp.begin();
+        if(it != elevator->m_reqUp.end())
+        {
+            int destination = it->floorDestination;
+
+            //if current floor is lower
+            if(elevator->m_currentFloor < destination)
+            {
+                elevator->Notify();
+                elevator->m_currentFloor++;
+                isMoving = true;
+            }
+            else if(elevator->m_currentFloor == destination)
+            {
+                elevator->Notify();
+                elevator->m_reqUp.erase(it);
+                isMoving = true;
+            }
+            //other case if user presses up and lift is upper then ignorewe handle when we move down
+        }
+        else
+        {
+            //no more request
+            elevator->m_currentDirection = elevator->m_reqDown.empty() ? Direction::IDLE:Direction::DOWN;
+        }
+    }
+    else if (elevator->m_currentDirection == Direction::DOWN)
+    {
+        //Find the next request.in down we proceess the largest
+        auto it = elevator->m_reqDown.begin();
+        if(it != elevator->m_reqDown.end())
+        {
+            int destination = it->floorDestination;
+
+            //if current floor is Upper
+            if(elevator->m_currentFloor > destination)
+            {
+                elevator->Notify();
+                elevator->m_currentFloor--;
+                isMoving = true;
+            }
+            else if(elevator->m_currentFloor == destination)
+            {
+                elevator->Notify();
+                elevator->m_reqDown.erase(it);
+                isMoving = true;
+            }
+            //other case if user presses down and lift is down then ignorewe handle when we move up
+        }
+        else
+        {
+            //no more request
+            elevator->m_currentDirection = elevator->m_reqUp.empty() ? Direction::IDLE:Direction::UP;
+        }
+    }
+    else //Idle case
+    {
+         if(elevator->m_reqUp.empty() == false)
+        {
+            
+            elevator->m_currentDirection = Direction::UP;
+        }
+        else if(elevator->m_reqDown.empty() == false)
+        {
+            elevator->m_currentDirection = Direction::DOWN;
+        }
+    }
+    return isMoving;
+} 
+ 
+======================================== 
+FILE: Main.cpp 
+======================================== 
+#include <iostream>
+#include "ElevatorSystem.h"
+#include "Requests.h"
+#include "UserObserver.h"
+#include "ElevatorStrategyEnum.h"
+#include <vector>
+int main()
+{
+    
+    UserObserver user1{"Rohan"};
+    UserObserver user2{"Mohan"};
+    UserObserver user3{"Sohan"};
+    std::vector<Observer*> users;
+    users.push_back(&user1);
+    //users.push_back(&user2);
+    //users.push_back(&user3);
+    ElevatorSystem::GetInstance().Initialize(3,ElevatorStrategyEnum::CLOSEST,users,-1,12);
+
+    ElevatorSystem::GetInstance().DoRequest({Direction::UP,5});
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    ElevatorSystem::GetInstance().DoRequest({Direction::UP,2});
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    ElevatorSystem::GetInstance().DoRequest({Direction::DOWN,3});
+    //elem.start();
+
+
+    std::this_thread::sleep_for(std::chrono::seconds(12));
+    ElevatorSystem::GetInstance().End();
+} 

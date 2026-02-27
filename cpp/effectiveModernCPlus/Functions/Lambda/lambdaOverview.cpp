@@ -43,7 +43,6 @@ int main()
 
   //3rd Example showcasing call by value and reference
   auto lambda2 = [&]() mutable{a++;};
-  //auto lambda2 = [=](){a++;};
   lambda2();
   std::cout << "\n A Vlaue after 2nd lambda = " << a << "\n";
 
