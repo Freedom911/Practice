@@ -129,6 +129,72 @@ bool isValid(std::vector<std::vector<int>> &mat)
     return true;
 }
 
+class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board)
+    {
+        //Check if same row and column
+
+        //Check for same sub matrix
+        //the forumula is simple
+        //idi = 3*(i/3)
+        //idj = 3*(j/3)
+        //these are the base offset pf the grid
+        //Dont memorie the forumula rather derive it is quick
+        //so in the problenm we are basically make sure that in a submatrix
+        //only one number is there . so total submatrix would be 0-8
+        //and we number it by idi + idj
+        //basically this is row major we are merging into 1d array:Q
+
+        std::vector<std::vector<int>> rowMatrix(10,std::vector<int>(10,0));
+        std::vector<std::vector<int>> colMatrix(10,std::vector<int>(10,0));
+        std::vector<std::vector<int>> subMatrix(10,std::vector<int>(10,0));
+
+        for(int i = 0; i < 9; i++)
+        {
+            for(int j = 0; j < 9; j++)
+            {
+                if(board[i][j] == '.')
+                {
+                    continue;
+                }
+                int val = board[i][j] - '0';
+                //for Same row
+                if(rowMatrix[i][val] == 1)
+                {
+                   return false;
+                }
+                rowMatrix[i][val] = 1;
+
+                //for Same column
+                if(colMatrix[j][val] == 1)
+                {
+                   return false;
+                }
+                colMatrix[j][val] = 1;
+
+                //for sub matrix
+                int idi = 3*(i/3);
+                int idj = (j/3);
+                int idt = idi+idj;
+
+                //for Same column
+                if(subMatrix[idt][val] == 1)
+                {
+                   return false;
+                }
+                subMatrix[idt][val] = 1;
+
+            }
+        }
+
+        return true;
+
+
+    }
+};
+
+
 int main()
 {
 
