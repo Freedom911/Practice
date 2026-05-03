@@ -99,24 +99,26 @@
 	  Orig = Head;
 	  //1-1-2-2-3-3
 	  //If both present
-	  while(Orig && Orig->next)
+	  while(Orig)
 	  {
 		 //Dry to run undersatnad
           
 		  //Get COpy Node which is next
 		  LL*Copy = Orig->next;
+		  LL*OrigNext = Copy->next;
 		  
-		  //Rejoin Link  of Orig List
-		  LL*OrigNext = Orig->next->next;  
+		  //Rejoin Link  of Orig List 
 		  Orig->next = OrigNext;
 		  
 		  //Make COpy NOde point to the next or OrigNext
 		  //Handing if nullptr
 		  if(OrigNext)
 			Copy->next = OrigNext->next;
+		  else
+		  	Copy->next = nullptr;
 		  
 		  //Continue Forward
-		  Orig = Orig->next;
+		  Orig = OrigNext;
 	  }
 	  
 	  return newHead;

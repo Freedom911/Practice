@@ -16,19 +16,20 @@ enum class WinStrategyName
 class WinManagerFactory
 {
     public:
-    WinStrategy *CreateWinStrategy(WinStrategyName strategyName)
+    std::unique_ptr<WinStrategy> CreateWinStrategy(WinStrategyName strategyName)
     {
         if(strategyName == WinStrategyName::COLUMN)
         {
-            return new ColumnWiseWin();
+            return std::make_unique<ColumnWiseWin>();
         }
         else if(strategyName == WinStrategyName::ROW)
         {
-            return new RowWiseWin();
+            return std::make_unique<RowWiseWin>();
         }
         else if (strategyName == WinStrategyName::DIAGONAL)
         {
-            return new DiagonalWiseWin();
+            return std::make_unique<DiagonalWiseWin>();
         }
+        return {};
     }
 };

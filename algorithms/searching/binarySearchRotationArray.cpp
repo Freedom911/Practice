@@ -2,31 +2,69 @@
 #include <iostream>
 #include <vector>
 
-int findElement(std::vector<int>arr,int l,int r,int item)
-{
+#include <bits/stdc++.h>
+using namespace std;
 
-  if(l > r)
-    return -1;
+class Solution {
+public:
+    // Function to search for target using binary search in rotated sorted array
+    int search(vector<int>& nums, int target) {
 
-  int mid = l + (r -l)/2;
+        // Set the search space to entire array
+        int low = 0;
+        int high = nums.size() - 1;
 
-  if(arr[mid] == item)
-    return mid + 1;
+        // Continue until the search space becomes invalid
+        while (low <= high) {
 
-  else
-  {
-    if(item >= arr[l] && item < arr[mid])
-      return findElement(arr,l,mid-1,item);
+            // Find the middle index
+            int mid = (low + high) / 2;
 
-    else
-      return findElement(arr,mid+1,r,item);
-  }
+            // If the target is found at mid, return mid
+            if (nums[mid] == target)
+                return mid;
 
-}
+            // Check if the left half is sorted
+            if (nums[low] <= nums[mid]) {
 
-int main()
-{
-  std::vector<int> elem {5,6,7,1,2,3,4};
-  
-  std::cout << findElement(elem,0,elem.size() - 1,0);
+                // If target lies in the sorted left half, search there
+                if (nums[low] <= target && target < nums[mid]) {
+                    high = mid - 1;
+                }
+                // Else search in the right half
+                else {
+                    low = mid + 1;
+                }
+            }
+
+            // Otherwise, right half is sorted
+            else {
+
+                // If target lies in the sorted right half, search there
+                if (nums[mid] < target && target <= nums[high]) {
+                    low = mid + 1;
+                }
+                // Else search in the left half
+                else {
+                    high = mid - 1;
+                }
+            }
+        }
+
+        // If not found, return -1
+        return -1;
+    }
+};
+
+// Driver code
+int main() {
+    vector<int> nums = {4,5,6,7,0,1,2};
+    int target = 0;
+
+    Solution obj;
+    int result = obj.search(nums, target);
+
+    cout << result << endl;
+
+    return 0;
 }

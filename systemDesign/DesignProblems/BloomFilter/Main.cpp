@@ -6,9 +6,8 @@
 int main()
 {
 
-    BloomFilter &BloomFilter = BloomFilter::GetInstance();
-    BloomFilter.Initialize();
-
+    BloomFilter filter(10);
+ 
 
     std::string input;
     do 
@@ -20,14 +19,14 @@ int main()
         {
             std::cout << "\nYou typed: " << input << "\n";
         }
-        if(BloomFilter.Check(input))
+        if(filter.Check(input))
         {
             std::cout << "\n User Already Taken \n";
         }
         else
         {
             std::cout << "\n User Registered \n";
-            BloomFilter.Add(input);
+            filter.Add(input);
         }
 
     } while (!input.empty()); // loop stops when input is empty

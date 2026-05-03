@@ -32,6 +32,7 @@ public:
         m_board->AddSnake(97, 30);
 
         // Initialize Players
+        //Move to aplayer Manager
         std::string Player1Name;
         std::string Player2Name;
         std::cout << "\n Enter Player Name 1. \n";
@@ -39,11 +40,13 @@ public:
         std::cout << "\n Enter Player Name 2. \n";
         std::cin >> Player2Name;
 
+        //Use Smart Pointers
         m_player1 = new Player(Player1Name, 0);
         m_player2 = new Player(Player2Name, 0);
         currentState = GameState::START;
     }
 
+    //Move to Player Manager
     Player *SwitchPlayer()
     {
         if (m_currentPlayer == nullptr || m_currentPlayer == m_player2)
@@ -60,6 +63,9 @@ public:
         currentState = GameState::INPROGRESS;
         Player *player = SwitchPlayer();
         {
+            //1. Do Validation of Move
+            //2. Place Symbol
+            //3. Check State
             
             std::cout << "\n Player  = " << player->getName() << "Roll The Die " << "\n";
             std::getchar();

@@ -11,18 +11,18 @@ enum class GameTypeEnum
 class GameManager
 {
     public:
-    GameType *CreateGame(GameTypeEnum type)
+    std::unique_ptr<GameType>CreateGame(GameTypeEnum type)
     {
         if(type == GameTypeEnum::TicTacToeGame)
         {
-            return new TicTacToe();
+            return std::make_unique<TicTacToe>();
         }
         else if(type == GameTypeEnum::Chess)        //add more games
         {
-            std::cout << "\nCreating Chess \n";
-            return nullptr;
+            //std::cout << "\nCreating Chess \n";
+            return {};
         }
 
-        return nullptr;
+        return {};
     }
 };

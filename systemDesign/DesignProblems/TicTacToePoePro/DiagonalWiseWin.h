@@ -9,22 +9,24 @@ public:
     {
 
         // Check Diagnoal
-        int total = 0;
         for (int i = 0; i < symbols.size(); i++)
         {
-            for (int j = 0; j < symbols[0].size(); j++)
+            if (symbols[i][i] != symbol)
             {
-                if (symbols[i][j] == symbol)
-                {
-                    total++;
-                }
+                return false;
             }
         }
 
-        if (total == symbols.size())
+        int n = symbols.size();
+        for (int i = n - 1; i >= 0; i--)
         {
-            return true;
+
+            if (symbols[i][n - i - 1] != symbol)
+            {
+                return false;
+            }
         }
-        return false;
+
+        return true;
     }
 };

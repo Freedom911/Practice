@@ -171,12 +171,12 @@ public:
     std::vector<std::vector<std::string>> solveNQueens(int n)
     {
         if(n == 0)
-        {
+        {  
             return {};
         }
         std::vector<std::vector<char>> currentBoard(n,std::vector<char>(n,'.'));
         std::vector<std::vector<std::string>> ans;
-        std::vector<int> left((2 * n) - 1,0);
+        std::vector<int> left(n,0);
         std::vector<int> upleft((2*n) - 1,0);
         std::vector<int> downleft((2*n) - 1,0);
         solve(currentBoard,ans,left,upleft,downleft,n,0);

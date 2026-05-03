@@ -4,50 +4,43 @@
 #include "HashFactory.h"
 #include <string>
 #include <vector>
-
+#include <memory>
+/**
+ * Class Manages Hash Strategy.
+ * Although Conceptually we need multiple hash functions. but here we use only 2 hash functions
+ * Bloom Filter doesnt need k filters rather we need to generate k position and we do that by
+ * using 2 hash functinos
+ * h1(x) + index*h2(x)
+ * So for each index of string we generate hash value
+ */
 
 class HashManager
 {
     public:
 
-    ~HashManager()
+    HashManager()
     {
-        ClearHashFunctions();
+       m_hash1 = std::move(m_factory.CreateHashFunction(HashTypeEnum::DJB2));
+       m_hash2 = std::move(m_factory.CreateHashFunction(HashTypeEnum::STDHASH));
     }
 
-    void AddHash(const HashTypeEnum &type)
+     std::pair<size_t,size_t>  GetHashedValues(const std::string &str)
     {
-        m_hashFunctions.push_back(m_factory.CreateHashFunction(type));
-    }
+        size_t hash1 =  m_hash1->CalculateHash(str);
+        //if hash2 == 0 then it will make all varibale to be same as it will depend on hash1 only
+        // index = hash1 + index * hash2
+        size_t hash2 =  m_hash2->CalculateHash(str);
 
-    size_t GetTotalHashFunctions()
-    {
-        return m_hashFunctions.size();
-    }
-
-    void ClearHashFunctions()
-    {
-        for(HashStrategy * foo : m_hashFunctions)
+        if (hash2 == 0)
         {
-            delete foo;
+            hash2 = 1;
         }
-        m_hashFunctions.clear();
+        return {hash1,hash2};
     }
 
-    bool GetHashedValue(const std::string &str,const size_t &index,size_t &hashedValue)
-    {
-        if(index < m_hashFunctions.size())
-        {
-            hashedValue = (m_hashFunctions[index]->CalculateHash(str) + index);
-            return true;
-        }
-
-        return false;
-    }
-
-    
 
     private:
-    std::vector<HashStrategy*> m_hashFunctions;
+    std::unique_ptr<HashStrategy> m_hash1;
+    std::unique_ptr<HashStrategy> m_hash2;
     HashFactory m_factory;
 };

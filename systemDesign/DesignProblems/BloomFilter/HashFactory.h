@@ -4,19 +4,20 @@
 #include "StdHash.h"
 #include "Djb2Hash.h"
 #include <string>
+#include <memory>
 
 class HashFactory
 {
    public:
-   virtual HashStrategy *CreateHashFunction(const HashTypeEnum &type)
+   virtual std::unique_ptr<HashStrategy> CreateHashFunction(const HashTypeEnum &type)
    {
        if(type == HashTypeEnum::STDHASH)
        {
-           return new StdHash();
+           return std::make_unique<StdHash>();
        }
        else
        {
-           return new Djb2Hash();
+           return std::make_unique<Djb2Hash>();
        }
    }
 };

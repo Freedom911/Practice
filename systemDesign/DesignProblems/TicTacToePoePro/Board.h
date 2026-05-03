@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <memory>
 #include "WinStrategy.h"
 #include "Validation.h"
 
@@ -7,60 +8,47 @@
 class Board
 {
 public:
-    Board(int tr, int tc,std::vector<WinStrategy*> winStrategies)
+    Board(int tr, int tc)
     {
-        m_winStrategies = winStrategies;
-        symbols.resize(tr);
-
+        m_symbols.resize(tr);
         for (int i = 0; i < tr; i++)
         {
-
-            {
-                symbols[i] = std::vector<Symbol>(tc, Symbol::BLANK);
-            }
+            m_symbols[i] = std::vector<Symbol>(tc, Symbol::BLANK);
         }
-        std::cout << "\n Grid Initialized of Size = " << tr << " " << tc << "\n";
+         m_totalPlaces = tr * tc;
     }
 
-    MatchState MakeNextMove(int r, int c, Symbol symbol)
+    void PlaceSymbol(int r, int c, Symbol symbol)
     {
-
-        MatchState matchState;
-        if(m_validation.ValidateMove(symbols,r,c,symbol,matchState) == false)
-        {
-            return matchState;
-        }
-
-
-        symbols[r][c] = symbol;
-
-      
-        for(auto elem : m_winStrategies)
-        {
-            if(elem->CheckWin(symbols,r,c,symbol))
-            {
-                return MatchState::WIN;
-            }
-        }
-        return MatchState::VALID;
+        m_symbols[r][c] = symbol;
+        m_totalPlaces--;
     }
 
-
-    void Print()
+    const std::vector<std::vector<Symbol>> &GetGrid()
     {
-        std::cout << "\n";
-        for(int i = 0; i < symbols.size(); i++)
+        return m_symbols;
+    }
+
+    std::string Print()
+    {
+        std::string msg = "\n";
+        for (int i = 0; i < m_symbols.size(); i++)
         {
-            for(int j = 0; j < symbols[i].size(); j++)
+            for (int j = 0; j < m_symbols[i].size(); j++)
             {
-                std::cout << symbol_to_string(symbols[i][j]) << "|";
+                msg += symbol_to_string(m_symbols[i][j]) += "|";
             }
-            std::cout << "\n";
+            msg += "\n";
         }
+        return msg;
+    }
+
+    int GetTotalPlacesLeft() const
+    {
+        return m_totalPlaces;
     }
 
 private:
-    std::vector<std::vector<Symbol>> symbols;
-    Validation m_validation;
-    std::vector<WinStrategy*> m_winStrategies;
+    std::vector<std::vector<Symbol>> m_symbols;
+    int m_totalPlaces{};
 };
